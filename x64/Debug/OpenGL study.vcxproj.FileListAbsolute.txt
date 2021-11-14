@@ -1,1 +1,2 @@
 C:\Users\tursi\source\repos\Study OpenGL\OpenGL study\x64\Debug\OpenGL study.exe
+C:\Users\tursi\OneDrive\Desktop\OpenGL-study\x64\Debug\OpenGL study.exe

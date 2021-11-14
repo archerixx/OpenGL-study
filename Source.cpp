@@ -1,9 +1,12 @@
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <algorithm>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
+
+float scale_number(float x, float oMin, float oMax, float nMin, float nMax);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -130,7 +133,7 @@ int main()
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 
-	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute;s bound vertex buffer object so afterwards we can safely unbind
+	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
 	// unbind GL_ARRAY_BUFFER with following
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -143,23 +146,113 @@ int main()
 	-0.9f, 0.9f, 0.0f, // left  
 	-0.9f, -0.9f, 0.0f, // right 
 	 0.9f, -0.9f, 0.0f,  // top
+	};
 
-	 0.1f, 0.4f, 0.0f, // left  
-	 0.5f, 0.0f, 0.0f, // right 
-	 0.1f, 0.0f, 0.0f  // top   
+	float triangleVertices3[] = {
+		0.1f, 0.4f, 0.0f, // left  
+		0.5f, 0.0f, 0.0f, // right 
+		0.1f, 0.0f, 0.0f  // top   
 	};
 
 	// another VBO, VAO
-	unsigned int VBO2, VAO2;
-	glGenBuffers(1, &VBO2);
-	glGenVertexArrays(1, &VAO2);
-	glBindVertexArray(VAO2);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+	unsigned int VBOs[2], VAOs[2];
+	glGenBuffers(2, VBOs);
+	glGenVertexArrays(2, VAOs);
+	// second
+	glBindVertexArray(VAOs[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices2), triangleVertices2, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// third
+	glBindVertexArray(VAOs[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices3), triangleVertices3, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+
+
+	// -----------------------------------------------------------
+
+	float graph[] = {
+		0.0f, 60.0f, 0.0f,
+		1.0f, 57.1f, 0.0f,
+		0.0f, 60.0f, 0.0f,
+
+		2.0f, 55.9f, 0.0f,
+		3.0f, 54.2f, 0.0f,
+		2.0f, 55.9f, 0.0f,
+
+		4.0f, 53.0f, 0.0f,
+		5.0f, 51.5f, 0.0f,
+		4.0f, 53.0f, 0.0f,
+
+		6.0f, 50.0f, 0.0f,
+		7.0f, 48.8f, 0.0f,
+		6.0f, 50.0f, 0.0f,
+
+		8.0f, 47.0f, 0.0f,
+		9.0f, 45.1f, 0.0f,
+		8.0f, 47.0f, 0.0f,
+
+		10.0f, 43.8f, 0.0f,
+		11.0f, 42.1f, 0.0f,
+		10.0f, 43.8f, 0.0f,
+
+		12.0f, 40.0f, 0.0f,
+		13.0f, 38.3f, 0.0f,
+		12.0f, 40.0f, 0.0f,
+
+		14.0f, 36.2f, 0.0f,
+		15.0f, 34.6f, 0.0f,
+		14.0f, 36.2f, 0.0f,
+
+		16.0f, 32.6f, 0.0f,
+		17.0f, 30.1f, 0.0f,
+		16.0f, 32.6f, 0.0f,
+
+		18.0f, 28.0f, 0.0f,
+		19.0f, 30.2f, 0.0f,
+		18.0f, 28.0f, 0.0f,
+
+		20.0f, 32.2f, 0.0f,
+		21.0f, 34.0f, 0.0f,
+		20.0f, 32.2f, 0.0f,
+	};
+
+
+
+	for (int item = 0; item < sizeof(graph) / sizeof(float); item++) {
+		graph[item] = scale_number(graph[item], -100.0, 100.0, -1.0, 1.0);
+	}
+	int count = 0;
+	for (int item = 0; item < sizeof(graph) / sizeof(float); item++) {
+		std::cout << graph[item] << ", ";
+		++count;
+		if (count == 3) {
+			std::cout << std::endl;
+			count = 0;
+		}
+			
+	}
+
+	unsigned int VBOLine, VAOLine;
+	glGenBuffers(1, &VBOLine);
+	glGenVertexArrays(1, &VAOLine);
+
+	glBindVertexArray(VAOLine);
+	glBindBuffer(GL_ARRAY_BUFFER, VBOLine);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(graph), graph, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+
+
 
 	// uncomment this call to draw in wireframe polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -188,15 +281,22 @@ int main()
 		glBindVertexArray(0);
 		*/
 
-		// bind element buffer
-		glBindVertexArray(VAO1);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//// bind element buffer
+		//glBindVertexArray(VAO1);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//glBindVertexArray(0);
+		////triangle
+		//glBindVertexArray(VAOs[0]);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glBindVertexArray(0);
+		////triangle
+		//glBindVertexArray(VAOs[1]);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glBindVertexArray(0);
+		//line
+		glBindVertexArray(VAOLine);
+		glDrawArrays(GL_TRIANGLES, 0, 33);
 		glBindVertexArray(0);
-		//triangle
-		glBindVertexArray(VAO2);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glBindVertexArray(0);
-
 
 		// glBindVertexArray(0); // no need to unbind it every time
 
@@ -233,3 +333,43 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 }
+
+
+float scale_number(float x, float oMin, float oMax, float nMin, float nMax)
+{
+	//range check
+	if (oMin == oMax) {
+		//std::cout<< "Warning: Zero input range";
+		return -1;
+	}
+
+	if (nMin == nMax) {
+		//std::cout<<"Warning: Zero output range";
+		return -1;
+	}
+
+	//check reversed input range
+	bool reverseInput = false;
+	float oldMin = std::min(oMin, oMax);
+	float oldMax = std::max(oMin, oMax);
+	if (oldMin == oMin)
+		reverseInput = true;
+
+	//check reversed output range
+	bool reverseOutput = false;
+	float newMin = std::min(nMin, nMax);
+	float newMax = std::max(nMin, nMax);
+	if (newMin == nMin)
+		reverseOutput = true;
+
+	float portion = (x - oldMin) * (newMax - newMin) / (oldMax - oldMin);
+	if (reverseInput)
+		portion = (oldMax - x) * (newMax - newMin) / (oldMax - oldMin);
+
+	float result = portion + newMin;
+	if (reverseOutput)
+		result = newMax - portion;
+
+	return result;
+}
+	
