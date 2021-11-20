@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+.vs/OpenGL study/v16/Browse.VC.db
+.vs/OpenGL study/v16/Browse.VC.db-shm
+.vs/OpenGL study/v16/Browse.VC.db-wal
+.vs/OpenGL study/v16/Browse.VC.opendb

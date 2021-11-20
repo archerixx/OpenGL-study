@@ -21,9 +21,10 @@ const char* vertexShaderSource = "#version 330 core\n"
 "}\0";
 const char* fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
+"uniform vec4 ourColor;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(0.3f, 0.9f, 0.2f, 1.0f);\n"
+"   FragColor = ourColor;\n"
 "}\n\0";
 
 int main()
@@ -180,82 +181,64 @@ int main()
 	float graph[] = {
 		0.0f, 60.0f, 0.0f,
 		1.0f, 57.1f, 0.0f,
-		0.0f, 60.0f, 0.0f,
-
 		2.0f, 55.9f, 0.0f,
 		3.0f, 54.2f, 0.0f,
-		2.0f, 55.9f, 0.0f,
-
 		4.0f, 53.0f, 0.0f,
 		5.0f, 51.5f, 0.0f,
-		4.0f, 53.0f, 0.0f,
-
 		6.0f, 50.0f, 0.0f,
 		7.0f, 48.8f, 0.0f,
-		6.0f, 50.0f, 0.0f,
-
 		8.0f, 47.0f, 0.0f,
 		9.0f, 45.1f, 0.0f,
-		8.0f, 47.0f, 0.0f,
-
 		10.0f, 43.8f, 0.0f,
 		11.0f, 42.1f, 0.0f,
-		10.0f, 43.8f, 0.0f,
-
 		12.0f, 40.0f, 0.0f,
 		13.0f, 38.3f, 0.0f,
-		12.0f, 40.0f, 0.0f,
-
 		14.0f, 36.2f, 0.0f,
 		15.0f, 34.6f, 0.0f,
-		14.0f, 36.2f, 0.0f,
-
 		16.0f, 32.6f, 0.0f,
 		17.0f, 30.1f, 0.0f,
-		16.0f, 32.6f, 0.0f,
-
 		18.0f, 28.0f, 0.0f,
 		19.0f, 30.2f, 0.0f,
-		18.0f, 28.0f, 0.0f,
-
 		20.0f, 32.2f, 0.0f,
 		21.0f, 34.0f, 0.0f,
-		20.0f, 32.2f, 0.0f,
 	};
 
-
-
-	for (int item = 0; item < sizeof(graph) / sizeof(float); item++) {
-		graph[item] = scale_number(graph[item], -100.0, 100.0, -1.0, 1.0);
+	unsigned int vec[63];
+	for (unsigned int i = 0, k=0; i < 63; i+=3, k++) {
+		vec[i] = k;
+		vec[i + 1] = k + 1;
+		vec[i + 2] = k;
 	}
-	int count = 0;
+	
 	for (int item = 0; item < sizeof(graph) / sizeof(float); item++) {
-		std::cout << graph[item] << ", ";
-		++count;
-		if (count == 3) {
-			std::cout << std::endl;
-			count = 0;
-		}
-			
+		graph[item] = scale_number(graph[item], 0.0, 60.0, -1.0, 1.0);
 	}
 
-	unsigned int VBOLine, VAOLine;
+	unsigned int VBOLine, VAOLine, EBOLine;
 	glGenBuffers(1, &VBOLine);
+	glGenBuffers(1, &EBOLine);
 	glGenVertexArrays(1, &VAOLine);
 
 	glBindVertexArray(VAOLine);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOLine);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(graph), graph, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOLine);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(vec), &vec, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
+	// uniform color lolcation
+	int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
 
+
+	// color combination
 
 
 	// uncomment this call to draw in wireframe polygons.
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// render loop
 	// -----------
@@ -269,8 +252,13 @@ int main()
 		// ------
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		
 		glUseProgram(shaderProgram);
+		
+		// setting up dynamic color for fragment shader
+		float timeValue = glfwGetTime();
+		float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
 		/*
 		// draw our first triangle
 		glBindVertexArray(VAO1); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
@@ -285,18 +273,27 @@ int main()
 		//glBindVertexArray(VAO1);
 		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		//glBindVertexArray(0);
-		////triangle
-		//glBindVertexArray(VAOs[0]);
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		//glBindVertexArray(0);
-		////triangle
-		//glBindVertexArray(VAOs[1]);
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		//glBindVertexArray(0);
-		//line
-		glBindVertexArray(VAOLine);
-		glDrawArrays(GL_TRIANGLES, 0, 33);
+		//triangle
+		glBindVertexArray(VAOs[0]);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
+		//triangle
+
+		// setting up dynamic color for fragment shader
+		float redValue = (sin(timeValue) / 2.0f) + 0.5f;
+		glUniform4f(vertexColorLocation, redValue, 0.0, 0.0f, 1.0f);
+
+
+		glBindVertexArray(VAOs[1]);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(0);
+		//line
+		/*glBindVertexArray(VAOLine);
+		glDrawArrays(GL_TRIANGLES, 0, 66);
+		glBindVertexArray(0);*/
+		// element line
+		/*glBindVertexArray(VAOLine);
+		glDrawElements(GL_TRIANGLES, 63, GL_UNSIGNED_INT, 0);*/
 
 		// glBindVertexArray(0); // no need to unbind it every time
 
