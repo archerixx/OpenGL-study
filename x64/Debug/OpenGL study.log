@@ -1,3 +1,2 @@
-﻿  Source.cpp
-C:\Users\tursi\OneDrive\Desktop\OpenGL-study\Source.cpp(255,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  OpenGL study.vcxproj -> C:\Users\tursi\OneDrive\Desktop\OpenGL-study\x64\Debug\OpenGL study.exe
+﻿  Shader.cpp
+  OpenGL study.vcxproj -> C:\Users\Zerin\Documents\GitHub\OpenGL-study\x64\Debug\OpenGL study.exe
