@@ -29,13 +29,35 @@
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Downloads\stb-master\stb-master\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="vertex.txt">
+    <Text Include="BrickTexture.vs">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="fragment.txt">
+    <Text Include="fragment.fs">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="vertex.vs">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="BrickTexture.fs">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\Downloads\container.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ketos.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="VectorTexture.vs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

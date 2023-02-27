@@ -82,8 +82,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Zerin\Documents\CppLibz\include;C:\Users\tursi\OneDrive\Desktop\Cpp Library\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Zerin\Documents\CppLibz\lib;C:\Users\tursi\OneDrive\Desktop\Cpp Library\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Zerin\Documents\CppLibz\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Zerin\Documents\CppLibz\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -156,11 +156,21 @@
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\Downloads\stb-master\stb-master\stb_image.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="BrickTexture.vs" />
+    <Text Include="BrickTexture.fs" />
     <Text Include="vertex.vs" />
     <Text Include="fragment.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\Downloads\container.jpg" />
+    <Image Include="ketos.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="VectorTexture.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
